@@ -262,6 +262,7 @@ ARG INSTALL_XHPROF=false
 
 RUN if [ ${INSTALL_XHPROF} = true ]; then \
     # Install the php xhprof extension 
+    php -r "echo PHP_MAJOR_VERSION;"; \
     if [ $(php -r "echo PHP_MAJOR_VERSION;") = 7 ]; then \
       curl -L -o /tmp/xhprof.tar.gz "https://github.com/tideways/php-xhprof-extension/archive/v4.1.6.tar.gz"; \
     else \ 
@@ -270,12 +271,13 @@ RUN if [ ${INSTALL_XHPROF} = true ]; then \
     && mkdir -p xhprof \
     && tar -C xhprof -zxvf /tmp/xhprof.tar.gz --strip 1 \
     && ( \
-        cd xhprof \
+        cd xhprof/php-xhprof-extension-4.1.6 \
         && phpize \
         && ./configure \
         && make \
         && make install \
     ) \
+    && cd ../../ \
     && rm -r xhprof \
     && rm /tmp/xhprof.tar.gz \
 ;fi
